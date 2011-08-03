@@ -162,12 +162,14 @@ function feeds_ui_create_form($form, &$form_state, $from_importer = NULL) {
     '#attributes' => array('class' => array('feed-name')),
   );
   $form['id'] = array(
-    '#type' => 'textfield',
+    '#type' => 'machine_name',
     '#title' => t('Machine name'),
     '#description' => t('A unique identifier for this configuration. Example: rss_feed. Must only contain lower case characters, numbers and underscores.'),
-    '#required' => TRUE,
     '#maxlength' => 128,
     '#attributes' => array('class' => array('feed-id')),
+    '#machine_name' => array(
+      'exists' => '_feeds_importer_exists',
+    ),
   );
   $form['description'] = array(
     '#type' => 'textfield',
@@ -851,4 +853,9 @@ function theme_feeds_ui_mapping_form($variables) {
 
   $output .= drupal_render_children($form);
   return $output;
+}
+
+function _feeds_importer_exists($id) {
+  ctools_include('export');
+  return ctools_export_load_object('feeds_importer', 'conditions', array('id' => $id));
 }
