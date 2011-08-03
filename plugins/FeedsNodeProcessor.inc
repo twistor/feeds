@@ -131,6 +131,9 @@ class FeedsNodeProcessor extends FeedsProcessor {
    */
   public function configForm(&$form_state) {
     $types = node_type_get_names();
+    if (empty($types)) {
+      drupal_set_message(t('There must be at least one !content_type defined to use the Node Processor.', array('!content_type' => l(t('content type'), 'admin/structure/types/add'))), 'warning', FALSE);
+    }
     array_walk($types, 'check_plain');
     $form = parent::configForm($form_state);
     $form['content_type'] = array(
@@ -217,6 +220,15 @@ class FeedsNodeProcessor extends FeedsProcessor {
   public function getMappingTargets() {
     $type = node_type_get_type($this->config['content_type']);
     $targets = parent::getMappingTargets();
+
+    // $type is FALSE if there is no content_type selected.
+    if (!$type) {
+      $types = node_type_get_names();
+      if (!empty($types)) {
+        drupal_set_message(t('You must select a !content_type to use the Node Processor.', array('!content_type' => l(t('content type'), 'admin/structure/feeds/edit/' . $this->id . '/settings/FeedsNodeProcessor'))), 'warning');
+      }
+      return $targets;
+    }
     if ($type->has_title) {
       $targets['title'] = array(
         'name' => t('Title'),
