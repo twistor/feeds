@@ -7,7 +7,7 @@
  *
  * Does actually not include mappers for field types defined in fields module
  * (because there aren't any) but mappers for all fields that contain their
- * value simply in $entity->fieldname['und'][$i]['value'].
+ * value simply in $entity->fieldname[LANGUAGE_NONE][$i]['value'].
  */
 
 /**
@@ -76,8 +76,8 @@ function file_feeds_set_target($source, $entity, $target, $value) {
   $field = isset($entity->$target) ? $entity->$target : array();
   foreach ($value as $v) {
     if ($file = $v->getFile($destination)) {
-      $field['und'][$i] = (array)$file;
-      $field['und'][$i]['display'] = 1; // @todo: Figure out how to properly populate this field.
+      $field[LANGUAGE_NONE][$i] = (array)$file;
+      $field[LANGUAGE_NONE][$i]['display'] = 1; // @todo: Figure out how to properly populate this field.
       if ($info['cardinality'] == 1) {
         break;
       }

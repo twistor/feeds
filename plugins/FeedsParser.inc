@@ -409,11 +409,11 @@ class FeedsDateTimeElement extends FeedsElement {
    */
   protected static function readDateField($entity, $field_name) {
     $ret = new FeedsDateTimeElement();
-    if (isset($entity->{$field_name}['und'][0]['date']) && $entity->{$field_name}['und'][0]['date'] instanceof FeedsDateTime) {
-      $ret->start = $entity->{$field_name}['und'][0]['date'];
+    if (isset($entity->{$field_name}[LANGUAGE_NONE][0]['date']) && $entity->{$field_name}[LANGUAGE_NONE][0]['date'] instanceof FeedsDateTime) {
+      $ret->start = $entity->{$field_name}[LANGUAGE_NONE][0]['date'];
     }
-    if (isset($entity->{$field_name}['und'][0]['date2']) && $entity->{$field_name}['und'][0]['date2'] instanceof FeedsDateTime) {
-      $ret->end = $entity->{$field_name}['und'][0]['date2'];
+    if (isset($entity->{$field_name}[LANGUAGE_NONE][0]['date2']) && $entity->{$field_name}[LANGUAGE_NONE][0]['date2'] instanceof FeedsDateTime) {
+      $ret->end = $entity->{$field_name}[LANGUAGE_NONE][0]['date2'];
     }
     return $ret;
   }
@@ -462,27 +462,27 @@ class FeedsDateTimeElement extends FeedsElement {
 
     $db_tz = new DateTimeZone($db_tz);
     if (!isset($entity->{$field_name})) {
-      $entity->{$field_name} = array('und' => array());
+      $entity->{$field_name} = array(LANGUAGE_NONE => array());
     }
     if ($use_start) {
-      $entity->{$field_name}['und'][0]['timezone'] = $use_start->getTimezone()->getName();
-      $entity->{$field_name}['und'][0]['offset'] = $use_start->getOffset();
+      $entity->{$field_name}[LANGUAGE_NONE][0]['timezone'] = $use_start->getTimezone()->getName();
+      $entity->{$field_name}[LANGUAGE_NONE][0]['offset'] = $use_start->getOffset();
       $use_start->setTimezone($db_tz);
-      $entity->{$field_name}['und'][0]['date'] = $use_start;
+      $entity->{$field_name}[LANGUAGE_NONE][0]['date'] = $use_start;
       /**
        * @todo the date_type_format line could be simplified based upon a patch
        *   DO issue #259308 could affect this, follow up on at some point.
        *   Without this, all granularity info is lost.
        *   $use_start->format(date_type_format($field['type'], $use_start->granularity));
        */
-      $entity->{$field_name}['und'][0]['value'] = $use_start->format(date_type_format($info['type']));
+      $entity->{$field_name}[LANGUAGE_NONE][0]['value'] = $use_start->format(date_type_format($info['type']));
     }
     if ($use_end) {
       // Don't ever use end to set timezone (for now)
-      $entity->{$field_name}['und'][0]['offset2'] = $use_end->getOffset();
+      $entity->{$field_name}[LANGUAGE_NONE][0]['offset2'] = $use_end->getOffset();
       $use_end->setTimezone($db_tz);
-      $entity->{$field_name}['und'][0]['date2'] = $use_end;
-      $entity->{$field_name}['und'][0]['value2'] = $use_end->format(date_type_format($info['type']));
+      $entity->{$field_name}[LANGUAGE_NONE][0]['date2'] = $use_end;
+      $entity->{$field_name}[LANGUAGE_NONE][0]['value2'] = $use_end->format(date_type_format($info['type']));
     }
   }
 }

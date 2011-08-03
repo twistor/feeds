@@ -94,7 +94,7 @@ function taxonomy_feeds_set_target($source, $entity, $target, $terms) {
       $tid = taxonomy_term_check_term($term, $vocabulary->vid);
     }
     if ($tid) {
-      $entity->{$target}['und'][] = array('tid' => $tid);
+      $entity->{$target}[LANGUAGE_NONE][] = array('tid' => $tid);
     }
 
     if ($info['cardinality'] == 1) {

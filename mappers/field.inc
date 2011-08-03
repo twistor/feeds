@@ -6,7 +6,7 @@
  *
  * Does actually not include mappers for field types defined in fields module
  * (because there aren't any) but mappers for all fields that contain their
- * value simply in $entity->fieldname['und'][$i]['value'].
+ * value simply in $entity->fieldname[LANGUAGE_NONE][$i]['value'].
  */
 
 /**
@@ -111,11 +111,11 @@ function _field_feeds_set_target($source, $entity, $target, $value, $input_forma
   $field = isset($entity->$target) ? $entity->$target : array();
   foreach ($value as $v) {
     if (!is_array($v) && !is_object($v)) {
-      $field['und'][$i]['value'] = $v;
+      $field[LANGUAGE_NONE][$i]['value'] = $v;
     }
     if ($input_format) {
       if (isset($format)) {
-        $field['und'][$i]['format'] = $format;
+        $field[LANGUAGE_NONE][$i]['format'] = $format;
       }
     }
     if ($info['cardinality'] == 1) {
