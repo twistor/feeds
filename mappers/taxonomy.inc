@@ -81,7 +81,6 @@ function taxonomy_feeds_set_target($source, $entity, $target, $terms) {
     $vocabulary = taxonomy_vocabulary_load($info['settings']['allowed_values'][0]['vid']);
   }
 
-  $i = 0;
   $entity->$target = isset($entity->$target) ? $entity->$target : array();
   foreach ($terms as $term) {
     $tid = 0;
@@ -95,13 +94,12 @@ function taxonomy_feeds_set_target($source, $entity, $target, $terms) {
       $tid = taxonomy_term_check_term($term, $vocabulary->vid);
     }
     if ($tid) {
-      $entity->{$target}['und'][$i]['tid'] = $tid;
+      $entity->{$target}['und'][] = array('tid' => $tid);
     }
 
     if ($info['cardinality'] == 1) {
       break;
     }
-    $i++;
   }
 }
 
