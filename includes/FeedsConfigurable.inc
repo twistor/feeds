@@ -234,7 +234,8 @@ function feeds_form($form, &$form_state, $configurable, $form_method) {
   $form['#feeds_form_method'] = $form_method;
   $form['#validate'] = array('feeds_form_validate');
   $form['#submit'] = array('feeds_form_submit');
-  $form['submit'] = array(
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#weight' => 100,

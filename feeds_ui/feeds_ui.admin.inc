@@ -119,7 +119,8 @@ function feeds_ui_overview_form($form, &$form_status) {
       $form['enabled'][$importer->id] = $importer_form;
     }
   }
-  $form['submit'] = array(
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#attributes' => array('class' => array('feeds-ui-hidden-submit')),
@@ -176,7 +177,8 @@ function feeds_ui_create_form($form, &$form_state, $from_importer = NULL) {
     '#title' => t('Description'),
     '#description' => t('A description of this configuration.'),
   );
-  $form['submit'] = array(
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Create'),
   );
@@ -433,7 +435,8 @@ function feeds_ui_plugin_form($form, &$form_state, $importer, $type) {
       '#default_value' => ($plugin['handler']['class'] == get_class($importer->$type)) ? $key : '',
     );
   }
-  $form['submit'] = array(
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#attributes' => array('class' => array('feeds-ui-hidden-submit')),
@@ -572,7 +575,8 @@ function feeds_ui_mapping_form($form, &$form_state, $importer) {
     '#value' => t('Add'),
     '#submit' => array('feeds_ui_mapping_form_add_submit'),
   );
-  $form['save'] = array(
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
     '#attributes' => array('class' => array('feeds-ui-hidden-submit')),

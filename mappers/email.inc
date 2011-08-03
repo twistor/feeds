@@ -39,13 +39,15 @@ function email_feeds_set_target($source, $entity, $target, $value) {
     $entity->$target = array();
   }
 
+  $field =& $entity->$target;
+
   $info = field_info_field($target);
 
   // Iterate over all values.
 
   foreach ($value as $i => $v) {
     if (valid_email_address($v)) {
-      $entity->$target[LANGUAGE_NONE][] = array('email' => $v);
+      $field[LANGUAGE_NONE][] = array('email' => $v);
 
       // Only check cardinality if we've actually added a value.
       if ($info['cardinality'] === ++$i) {
