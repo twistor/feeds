@@ -6,11 +6,14 @@
  */
 
 /**
- * Implementation of hook_feeds_node_processor_targets_alter().
+ * Implementation of hook_feeds_processor_targets_alter().
  *
  * @see FeedsNodeProcessor::getMappingTargets().
  */
-function content_feeds_node_processor_targets_alter(&$targets, $content_type) {
+function content_feeds_processor_targets_alter($targets, $entity_type, $content_type) {
+  if ($entity_type !== 'node') {
+    return;
+  }
   $info = content_types($content_type);
   $fields = array();
   if (isset($info['fields']) && count($info['fields'])) {
@@ -36,7 +39,7 @@ function content_feeds_node_processor_targets_alter(&$targets, $content_type) {
  * user has decided to map to and $value contains the value of the feed item
  * element the user has picked as a source.
  */
-function content_feeds_set_target($node, $target, $value) {
+function content_feeds_set_target($source, $node, $target, $value) {
 
   $field = isset($node->$target) ? $node->$target : array();
 

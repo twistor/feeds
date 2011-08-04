@@ -145,6 +145,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    *   feeds_feeds_plugins()).
    */
   public function setPlugin($id, $plugin_key) {
+    feeds_include('FeedsPlugin', 'plugins');
     if ($type = FeedsPlugin::typeOf($plugin_key)) {
       $edit = array(
         'plugin_key' => $plugin_key,

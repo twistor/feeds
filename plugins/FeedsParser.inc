@@ -1,5 +1,7 @@
 <?php
 
+feeds_include('FeedsPlugin', 'plugins');
+
 /**
  * A result of a parsing stage.
  */

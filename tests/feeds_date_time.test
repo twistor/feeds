@@ -13,7 +13,6 @@
  * Feeds at some time.
  */
 class FeedsDateTimeTest extends FeedsWebTestCase {
-  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -27,6 +26,7 @@ class FeedsDateTimeTest extends FeedsWebTestCase {
    * Dispatch tests, only use one entry point method testX to save time.
    */
   public function test() {
+    feeds_include('FeedsParser', 'plugins');
     $date = new FeedsDateTime('2010-20-12');
     $this->assertTrue(is_numeric($date->format('U')));
     $date = new FeedsDateTime('created');
