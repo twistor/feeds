@@ -57,14 +57,14 @@ class FeedsSimplePieEnclosure extends FeedsEnclosure {
 class FeedsSimplePieParser extends FeedsParser {
 
   /**
-   * Implementation of FeedsParser::parse().
+   * Implements FeedsParser::parse().
    */
-  public function parse(FeedsImportBatch $batch, FeedsSource $source) {
+  public function parse(FeedsSource $source, FeedsFetcherResult $fetcher_result) {
     feeds_include_library('simplepie.inc', 'simplepie');
 
     // Initialize SimplePie.
     $parser = new SimplePie();
-    $parser->set_raw_data($batch->getRaw());
+    $parser->set_raw_data($fetcher_result->getRaw());
     $parser->set_stupidly_fast(TRUE);
     $parser->encode_instead_of_strip(FALSE);
     // @todo Is caching effective when we pass in raw data?
@@ -73,9 +73,10 @@ class FeedsSimplePieParser extends FeedsParser {
     $parser->init();
 
     // Construct the standard form of the parsed feed
-    $batch->title = html_entity_decode(($title = $parser->get_title()) ? $title : $this->createTitle($parser->get_description()));
-    $batch->description = $parser->get_description();
-    $batch->link = html_entity_decode($parser->get_link());
+    $result = new FeedsParserResult();
+    $result->title = html_entity_decode(($title = $parser->get_title()) ? $title : $this->createTitle($parser->get_description()));
+    $result->description = $parser->get_description();
+    $result->link = html_entity_decode($parser->get_link());
 
     $items_num = $parser->get_item_quantity();
     for ($i = 0; $i < $items_num; $i++) {
@@ -135,10 +136,11 @@ class FeedsSimplePieParser extends FeedsParser {
       $this->parseExtensions($item, $simplepie_item);
       $item['raw'] = $simplepie_item->data;
 
-      $batch->items[] = $item;
+      $result->items[] = $item;
     }
     // Release parser.
     unset($parser);
+    return $result;
   }
 
   /**
@@ -210,8 +212,8 @@ class FeedsSimplePieParser extends FeedsParser {
    * Returns cache directory. Creates it if it doesn't exist.
    */
   protected function cacheDirectory() {
-    $directory = file_directory_path() .'/simplepie';
-    file_check_directory($directory, TRUE);
+    $directory = 'public://simplepie';
+    file_prepare_directory($dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     return $directory;
   }
 

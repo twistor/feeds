@@ -30,7 +30,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
     $modules[] = 'taxonomy';
     $modules[] = 'feeds';
     $modules[] = 'feeds_ui';
-    //$modules[] = 'feeds_tests';
+    $modules[] = 'feeds_tests';
     $modules[] = 'ctools';
     $modules[] = 'job_scheduler';
     $modules = array_unique($modules);
@@ -69,7 +69,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    * Get the absolute directory path of the feeds module.
    */
   public function absolutePath() {
-    return  $this->absolute() .'/'. drupal_get_path('module', 'feeds');
+    return  $this->absolute() . '/' . drupal_get_path('module', 'feeds');
   }
 
   /**
@@ -79,7 +79,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    * to feeds included in this test.
    */
   public function generateOPML() {
-    $path = $GLOBALS['base_url'] .'/'. drupal_get_path('module', 'feeds') .'/tests/feeds/';
+    $path = $GLOBALS['base_url'] . '/' . drupal_get_path('module', 'feeds') . '/tests/feeds/';
 
   $output =
 '<?xml version="1.0" encoding="utf-8"?>
@@ -91,10 +91,10 @@ class FeedsWebTestCase extends DrupalWebTestCase {
 </head>
 <body>
   <outline text="Feeds test group" >
-       <outline title="Development Seed - Technological Solutions for Progressive Organizations" text="" xmlUrl="'. $path .'developmentseed.rss2" type="rss" />
-       <outline title="Magyar Nemzet Online - H’rek" text="" xmlUrl="'. $path .'feed_without_guid.rss2" type="rss" />
-       <outline title="Drupal planet" text="" type="rss" xmlUrl="'. $path .'drupalplanet.rss2" />
-    </outline>
+    <outline title="Development Seed - Technological Solutions for Progressive Organizations" text="" xmlUrl="' . $path . 'developmentseed.rss2" type="rss" />
+    <outline title="Magyar Nemzet Online - H’rek" text="" xmlUrl="' . $path . 'feed_without_guid.rss2" type="rss" />
+    <outline title="Drupal planet" text="" type="rss" xmlUrl="' . $path . 'drupalplanet.rss2" />
+  </outline>
 </body>
 </opml>';
 
@@ -145,7 +145,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    *   feeds_feeds_plugins()).
    */
   public function setPlugin($id, $plugin_key) {
-    if ($type = feeds_plugin_type($plugin_key)) {
+    if ($type = FeedsPlugin::typeOf($plugin_key)) {
       $edit = array(
         'plugin_key' => $plugin_key,
       );
@@ -153,7 +153,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
 
       // Assert actual configuration.
       $config = unserialize(db_result(db_query("SELECT config FROM {feeds_importer} WHERE id = '%s'", $id)));
-      $this->assertEqual($config[$type]['plugin_key'], $plugin_key, 'Verified correct '. $type .' ('. $plugin_key .').');
+      $this->assertEqual($config[$type]['plugin_key'], $plugin_key, 'Verified correct ' . $type . ' (' . $plugin_key . ').');
     }
   }
 
@@ -168,7 +168,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    *   The settings to set.
    */
   public function setSettings($id, $plugin, $settings) {
-    $this->drupalPost('admin/build/feeds/edit/'. $id .'/settings/'. $plugin, $settings, 'Save');
+    $this->drupalPost('admin/build/feeds/edit/' . $id . '/settings/' . $plugin, $settings, 'Save');
     $this->assertText('Your changes have been saved.');
   }
 
@@ -186,7 +186,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    */
   public function createFeedNode($id = 'syndication', $feed_url = NULL, $title = '', $content_type = NULL) {
     if (empty($feed_url)) {
-      $feed_url = $GLOBALS['base_url'] .'/'. drupal_get_path('module', 'feeds') .'/tests/feeds/developmentseed.rss2';
+      $feed_url = $GLOBALS['base_url'] . '/' . drupal_get_path('module', 'feeds') . '/tests/feeds/developmentseed.rss2';
     }
 
     // If content type not given, retrieve it.
@@ -194,7 +194,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
       $result = db_query("SELECT config FROM {feeds_importer} WHERE id = '%s'", $id);
       $config = unserialize(db_result($result));
       $content_type = $config['content_type'];
-      $this->assertFalse(empty($content_type), 'Valid content type found: '. $content_type);
+      $this->assertFalse(empty($content_type), 'Valid content type found: ' . $content_type);
     }
 
     // Create a feed node.
@@ -202,7 +202,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
       'title' => $title,
       'feeds[FeedsHTTPFetcher][source]' => $feed_url,
     );
-    $this->drupalPost('node/add/'. str_replace('_', '-', $content_type), $edit, 'Save');
+    $this->drupalPost('node/add/' . str_replace('_', '-', $content_type), $edit, 'Save');
     $this->assertText('has been created.');
 
     // Get the node id from URL.
@@ -263,12 +263,12 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    */
   public function importURL($id, $feed_url = NULL) {
     if (empty($feed_url)) {
-      $feed_url = $GLOBALS['base_url'] .'/'. drupal_get_path('module', 'feeds') .'/tests/feeds/developmentseed.rss2';
+      $feed_url = $GLOBALS['base_url'] . '/' . drupal_get_path('module', 'feeds') . '/tests/feeds/developmentseed.rss2';
     }
     $edit = array(
       'feeds[FeedsHTTPFetcher][source]' => $feed_url,
-      );
-    $nid = $this->drupalPost('import/'. $id, $edit, 'Import');
+    );
+    $nid = $this->drupalPost('import/' . $id, $edit, 'Import');
 
     // Check whether feed got recorded in feeds_source table.
     $this->assertEqual(1, db_result(db_query("SELECT COUNT(*) FROM {feeds_source} WHERE id = '%s' AND feed_nid = 0", $id)));
@@ -291,7 +291,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
     $edit = array(
       'files[feeds]' => $file,
     );
-    $this->drupalPost('import/'. $id, $edit, 'Import');
+    $this->drupalPost('import/' . $id, $edit, 'Import');
   }
 
   /**
@@ -322,7 +322,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
    */
   public function addMappings($id, $mappings) {
 
-    $path = 'admin/build/feeds/edit/'. $id .'/mapping';
+    $path = 'admin/build/feeds/edit/' . $id . '/mapping';
 
     // Iterate through all mappings and add the via the form.
     foreach ($mappings as $i => $mapping) {
@@ -336,7 +336,7 @@ class FeedsWebTestCase extends DrupalWebTestCase {
       // If unique was set, set the last mapping's unique flag.
       if ($unique) {
         $edit = array(
-          'unique_flags['. $i .']' => 1,
+          'unique_flags[' . $i . ']' => 1,
         );
         $this->drupalPost($path, $edit, t('Save'));
       }
@@ -355,6 +355,18 @@ class FeedsWebTestCase extends DrupalWebTestCase {
     }
     return $nid;
   }
+
+  /**
+   * Copies a directory.
+   */
+  //public function copyDir($source, $dest) {
+  //  $result = file_prepare_directory($dest, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+  //  foreach (@scandir($source) as $file) {
+  //    if (is_file("$source/$file")) {
+  //      $file = file_unmanaged_copy("$source/$file", "$dest/$file");
+  //    }
+  //  }
+  //}
 }
 
 /**
